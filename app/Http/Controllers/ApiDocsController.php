@@ -24,11 +24,6 @@ use OpenApi\Attributes\SecurityScheme;
 
 class ApiDocsController extends Controller
 {
-    /**
-     * API doc title
-     *
-     * @OA\Property
-     */
     public string $title;
 
     #[Get(
