@@ -137,9 +137,13 @@ class AuthController extends Controller
                 ], 401);
             }
         } catch (\Throwable $e) {
+            $message = 'We could not authenticate you';
+            if(getenv('APP_DEBUG') === 'true') {
+                $message = $e->getMessage();
+            }
             return response()->json([
                 'status' => false,
-                'message' => $e->getMessage()
+                'message' => $message
             ], 500);
         }
 

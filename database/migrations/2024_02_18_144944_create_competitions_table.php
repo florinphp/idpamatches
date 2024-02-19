@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('competitions', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->foreignId('club_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignId('club_id')->nullable()->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignId('user_id')->nullable()->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->string('location');
             $table->string('country');
             $table->string('level');

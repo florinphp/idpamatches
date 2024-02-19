@@ -12,6 +12,7 @@ class Competition extends Model
     protected $fillable = [
         'name',
         'club_id',
+        'user_id',
         'location',
         'country',
         'level',

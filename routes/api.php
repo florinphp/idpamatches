@@ -17,15 +17,18 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->as('v1:')->group(static function (): void {
     Route::group(['prefix' => 'auth', 'as' => 'auth.'], function () {
-        Route::post('/register', [AuthController::class, 'register'])->name('register');
-        Route::post('/login', [AuthController::class, 'login'])->name('login');
+        Route::post('/register', [AuthController::class, 'register'])->name('register')
+            ->withoutMiddleware('auth:sanctum');
+        Route::post('/login', [AuthController::class, 'login'])->name('login')
+            ->withoutMiddleware('auth:sanctum');
     });
 
     Route::group(['prefix' => 'clubs', 'as' => 'clubs.'], function () {
-        Route::get('/clubs', [AuthController::class, 'index'])->name('index');
-        Route::post('/clubs', [AuthController::class, 'store'])->name('store');
-        //Route::get('/clubs/{id}', [AuthController::class, 'show'])->name('show');
-        Route::put('/clubs/{id}', [AuthController::class, 'update'])->name('update');
-        Route::delete('/clubs/{id}', [AuthController::class, 'destroy'])->name('destroy');
+        Route::get('/', [ClubController::class, 'index'])->name('index')
+            ->withoutMiddleware('auth:sanctum');
+        Route::post('/', [ClubController::class, 'store'])->name('store');
+        Route::get('/{id}', [ClubController::class, 'show'])->name('show');
+        Route::put('/{id}', [ClubController::class, 'update'])->name('update');
+        Route::delete('/{id}', [ClubController::class, 'delete'])->name('delete');
     });
 });

@@ -4,13 +4,13 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreClubRequest;
-use App\Http\Resources\ClubIndexResource;
+use App\Http\Resources\ClubResource;
 use App\Models\Club;
 use App\OpenApi\Components\Errors\ServerError;
 use App\OpenApi\Components\Errors\UnprocessableContentError;
-use App\OpenApi\Components\Requests\AuthUser;
 use App\OpenApi\Components\Requests\ClubCreateRequestBody;
 use App\OpenApi\Components\Responses\AuthUserSuccess;
+use App\OpenApi\Components\Responses\Clubs\ClubCreatedResponseBody;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use OpenApi\Attributes\Delete;
@@ -65,7 +65,7 @@ class ClubController extends Controller
     )]
     public function index(Request $request): JsonResponse
     {
-        return response()->json(ClubIndexResource::collection(Club::all()));
+        return response()->json(ClubResource::collection(Club::all()));
     }
 
     #[Post(
@@ -87,6 +87,10 @@ class ClubController extends Controller
             new Response(
                 response: 200,
                 description: 'OK',
+                content: new JsonContent(
+                    ref: ClubCreatedResponseBody::class,
+                    type: 'object'
+                )
             ),
             new Response(
                 response: 422,
@@ -100,7 +104,38 @@ class ClubController extends Controller
     )]
     public function store(StoreClubRequest $request): JsonResponse
     {
-        return response()->json(Club::store($request->only(['name', 'country'])));
+        return response()->json(new ClubResource(Club::create($request->only(['name', 'country']))));
+    }
+
+    #[Get(
+        path: '/clubs/{id}',
+        operationId: 'viewClub',
+        requestBody: new RequestBody(
+            description: 'view club',
+        ),
+        tags: ['clubs'],
+        responses: [
+            new Response(
+                response: 200,
+                description: 'OK',
+                content: new JsonContent(
+                    ref: ClubCreatedResponseBody::class,
+                    type: 'object'
+                )
+            ),
+            new Response(
+                response: 404,
+                description: 'Not Found',
+            ),
+        ]
+    )]
+    public function show(Request $request, int $id): JsonResponse
+    {
+        if (($club = Club::find($id)) instanceof Club) {
+            return response()->json(new ClubResource($club));
+        } else {
+            return response()->json([], 404);
+        }
     }
 
     #[Put(
@@ -122,6 +157,14 @@ class ClubController extends Controller
             new Response(
                 response: 200,
                 description: 'OK',
+                content: new JsonContent(
+                    ref: ClubCreatedResponseBody::class,
+                    type: 'object'
+                )
+            ),
+            new Response(
+                response: 404,
+                description: 'Not Found',
             ),
             new Response(
                 response: 422,
@@ -135,7 +178,10 @@ class ClubController extends Controller
     )]
     public function update(StoreClubRequest $request, int $id): JsonResponse
     {
-        return response()->json(Club::find($id)->update($request->only(['name', 'country'])));
+        $club = Club::find($id);
+        $club->update($request->only(['name', 'country']));
+
+        return response()->json(new ClubResource($club));
     }
 
     #[Delete(
