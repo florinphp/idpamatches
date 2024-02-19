@@ -18,9 +18,9 @@ use OpenApi\Attributes\Schema;
         ),
         new Property(
             property: 'errors',
+            ref: ValidationError::class,
             description: 'array containing each field with error/s and descriptive messages for all the errors',
-            type: 'object',
-            ref: ValidationError::class
+            type: 'object'
         )
     ],
     type: 'object'

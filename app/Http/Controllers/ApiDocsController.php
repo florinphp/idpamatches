@@ -2,16 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use http\Env;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use OpenApi\Attributes\Get;
 use OpenApi\Attributes\Info;
 use OpenApi\Attributes\Response;
 use OpenApi\Attributes\SecurityScheme;
+use OpenApi\Attributes\Server;
 
 #[Info(
     version: '1.0.0',
     title: 'IDPA Matches'
+)]
+#[Server(
+    url: 'http://idpamatches.test/api/v1'
 )]
 #[SecurityScheme(
     securityScheme: 'bearerAuth',
